@@ -1,0 +1,55 @@
+CHIP CPU {
+
+    IN  inM[16],      // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset=1) or continue executing
+                         // the current program (reset=0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+	//Selecting the input for the ALU
+
+	Not(in=instruction[15],out=ni);  //obtaining the information about the type of information (A or C instruction)
+	Mux16(a=outtM,b=instruction,sel=ni,out=i);  //Selecting the input to be loaded into the a register
+
+	Or(a=ni,b=instruction[5],out=intoA);  //Getting the value of the load
+	ARegister(in=i,load=intoA,out=A,out[0..14]=addressM); //loading the input based on the load output
+
+	And(a=instruction[15],b=instruction[12],out=AorM);  //Selection line for the mux to choose where A or M input to be done 
+	Mux16(a=A,b=inM,sel=AorM,out=AM);  //Selecting the A or M input based on the load 
+	
+	ALU(x=D,y=AM,zx=instruction[11],nx=instruction[10],zy=instruction[9],ny=instruction[8],f=instruction[7],no=instruction[6],out=outtM,out=outM,zr=zr,ng=ng); 
+	//From the above operations one of the input is selected and the control bits are inputed 
+
+	And(a=instruction[15],b=instruction[4],out=intoD);  //Getting the value of the load bit 
+	DRegister(in=outtM,load=intoD,out=D);  //Output of the ALU is loaded if it is a C instuction and d2 bit is 1
+
+	And(a=instruction[15],b=instruction[3],out=writeM);  
+	//If it is a C instruction and the d3 is 1 then the output bit writeM is 1, so that the output of the ALU is loaded into the Mregister in the RAM
+
+//Load bit of the PC for the jump case
+
+	Not(in=ng,out=pos);
+	Not(in=zr,out=nzr);
+	And(a=instruction[15],b=instruction[0],out=jgt);
+	And(a=pos,b=nzr,out=posnzr);
+	And(a=jgt,b=posnzr,out=ld1);
+
+	And(a=instruction[15],b=instruction[1],out=jeq);
+	And(a=jeq,b=zr,out=ld2);
+
+	And(a=instruction[15],b=instruction[2],out=jlt);
+	And(a=jlt,b=ng,out=ld3);
+
+	Or(a=ld1,b=ld2,out=ldt);
+	Or(a=ld3,b=ldt,out=ld);
+
+//Program counter used in case there is a jump case or increment the address value or reset the CPU
+	PC(in=A,load=ld,inc=true,reset=reset,out[0..14]=pc);
+
+}

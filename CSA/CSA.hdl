@@ -1,0 +1,59 @@
+CHIP CSA{
+IN A[16],B[16],Cin;
+OUT Cout,S[16];
+
+PARTS:
+//Adding the two 16 bit number assuming the input carry is 0
+FullAdder(a=A[0],b=B[0],c=false,sum=s0,carry=c0);
+FullAdder(a=A[1],b=B[1],c=c0,sum=s1,carry=c1);
+FullAdder(a=A[2],b=B[2],c=c1,sum=s2,carry=c2);
+FullAdder(a=A[3],b=B[3],c=c2,sum=s3,carry=c3);
+FullAdder(a=A[4],b=B[4],c=c3,sum=s4,carry=c4);
+FullAdder(a=A[5],b=B[5],c=c4,sum=s5,carry=c5);
+FullAdder(a=A[6],b=B[6],c=c5,sum=s6,carry=c6);
+FullAdder(a=A[7],b=B[7],c=c6,sum=s7,carry=c7);
+FullAdder(a=A[8],b=B[8],c=c7,sum=s8,carry=c8);
+FullAdder(a=A[9],b=B[9],c=c8,sum=s9,carry=c9);
+FullAdder(a=A[10],b=B[10],c=c9,sum=s10,carry=c10);
+FullAdder(a=A[11],b=B[11],c=c10,sum=s11,carry=c11);
+FullAdder(a=A[12],b=B[12],c=c11,sum=s12,carry=c12);
+FullAdder(a=A[13],b=B[13],c=c12,sum=s13,carry=c13);
+FullAdder(a=A[14],b=B[14],c=c13,sum=s14,carry=c14);
+FullAdder(a=A[15],b=B[15],c=c14,sum=s15,carry=c15);
+//Adding the two 16 bit number assuming the input carry is 1
+FullAdder(a=A[0],b=B[0],c=true,sum=s16,carry=c16);
+FullAdder(a=A[1],b=B[1],c=c16,sum=s17,carry=c17);
+FullAdder(a=A[2],b=B[2],c=c17,sum=s18,carry=c18);
+FullAdder(a=A[3],b=B[3],c=c18,sum=s19,carry=c19);
+FullAdder(a=A[4],b=B[4],c=c19,sum=s20,carry=c20);
+FullAdder(a=A[5],b=B[5],c=c20,sum=s21,carry=c21);
+FullAdder(a=A[6],b=B[6],c=c21,sum=s22,carry=c22);
+FullAdder(a=A[7],b=B[7],c=c22,sum=s23,carry=c23);
+FullAdder(a=A[8],b=B[8],c=c23,sum=s24,carry=c24);
+FullAdder(a=A[9],b=B[9],c=c24,sum=s25,carry=c25);
+FullAdder(a=A[10],b=B[10],c=c25,sum=s26,carry=c26);
+FullAdder(a=A[11],b=B[11],c=c26,sum=s27,carry=c27);
+FullAdder(a=A[12],b=B[12],c=c27,sum=s28,carry=c28);
+FullAdder(a=A[13],b=B[13],c=c28,sum=s29,carry=c29);
+FullAdder(a=A[14],b=B[14],c=c29,sum=s30,carry=c30);
+FullAdder(a=A[15],b=B[15],c=c30,sum=s31,carry=c31);
+//Selecting the output carry based on the input carry
+Mux(a=c15,b=c31,sel=Cin,out=Cout);
+//Selecting the output sum based on the input carry
+Mux(a=s0,b=s16,sel=Cin,out=S[0]);
+Mux(a=s1,b=s17,sel=Cin,out=S[1]);
+Mux(a=s2,b=s18,sel=Cin,out=S[2]);
+Mux(a=s3,b=s19,sel=Cin,out=S[3]);
+Mux(a=s4,b=s20,sel=Cin,out=S[4]);
+Mux(a=s5,b=s21,sel=Cin,out=S[5]);
+Mux(a=s6,b=s22,sel=Cin,out=S[6]);
+Mux(a=s7,b=s23,sel=Cin,out=S[7]);
+Mux(a=s8,b=s24,sel=Cin,out=S[8]);
+Mux(a=s9,b=s25,sel=Cin,out=S[9]);
+Mux(a=s10,b=s26,sel=Cin,out=S[10]);
+Mux(a=s11,b=s27,sel=Cin,out=S[11]);
+Mux(a=s12,b=s28,sel=Cin,out=S[12]);
+Mux(a=s13,b=s29,sel=Cin,out=S[13]);
+Mux(a=s14,b=s30,sel=Cin,out=S[14]);
+Mux(a=s15,b=s31,sel=Cin,out=S[15]);
+}
